@@ -37,17 +37,19 @@ if __name__ == "__main__":
 
     # start sequence
     while True:
+        # Red
         control_led(True, red_pin)
         clear()
-        control_led(True, blue_pin)
-        clear()
-        control_led(True, blue_pin)
-        clear()
-        control_led(True, green_pin)
-        clear()
-        control_led(True, green_pin)
-        clear()
-        control_led(True, green_pin)
-        clear()
+
+        # Blue
+        for i in range(2):
+            control_led(True, blue_pin)
+            clear()
+
+        # Green
+        for i in range(3):
+            control_led(True, green_pin)
+            clear()
+
 
 
