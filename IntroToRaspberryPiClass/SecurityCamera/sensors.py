@@ -24,8 +24,6 @@ import torch
 
 #YOLO
 from ultralytics import YOLO
-#YOLOv8 logger
-import comet_ml
 
 #gpio pin library for sensors (door open/close & LED)
 import RPi.GPIO as GPIO
@@ -51,26 +49,13 @@ class SensorManager:
 
         # create Picamera object
         self.picam2 = Picamera2()    
-        print("Created picam2")
-        #self.picam2.start_preview(Preview.QTGL, x=100, y=200, width=800, height=600,transform=Transform(vflip=1))
-        print("Started preview")
-        self.faces = []
         self.picam2.start()
-        print("Started")
-
-        self.faces = [] 
 
         #setup pytorch to run optimally
         torch.backends.quantized.engine='qnnpack'
         torch.set_default_device('cpu')
 
         self.model = YOLO("yolov8n.pt")
-        #self.model.set_classes(["person"])
-        comet_ml.init()        
-
-        #variables for tracking performance on neural network
-        self.frame_count = 0  
-        self.last_logged = 0
 
     def control_led(self, on, color_pin):
         self.clear_led()
@@ -131,10 +116,7 @@ class SensorManager:
         for result in results:
             if len(result.boxes) > 0:
                 faces_detected = True
-        #print("Faces detected: ", faces_detected)
 
-        # print and draw results
-        #print("Results: ", results)
         self.draw_faces(results, image)
         return faces_detected
 
