@@ -21,6 +21,7 @@ def control_led(on, color_pin):
         GPIO.output(color_pin, GPIO.LOW)
 
 def clear():
+    time.sleep(0.5)
     clear_led()
     time.sleep(0.5)
 
@@ -37,22 +38,16 @@ if __name__ == "__main__":
     # start sequence
     while True:
         control_led(True, red_pin)
-        time.sleep(0.5)
         clear()
         control_led(True, blue_pin)
-        time.sleep(0.5)
         clear()
         control_led(True, blue_pin)
-        time.sleep(0.5)
         clear()
         control_led(True, green_pin)
-        time.sleep(0.5)
         clear()
         control_led(True, green_pin)
-        time.sleep(0.5)
         clear()
         control_led(True, green_pin)
-        time.sleep(0.5)
         clear()
 
 
