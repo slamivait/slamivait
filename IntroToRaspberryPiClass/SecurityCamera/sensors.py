@@ -39,8 +39,8 @@ class SensorManager:
         self.blue_pin = 22
 
         #Set the GPIO mode to BCM
-        self.DOOR_SENSOR_PIN=16
-        GPIO.setup(self.DOOR_SENSOR_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.door_sensor_pin=16
+        GPIO.setup(self.door_sensor_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         # all are always outputting data
         GPIO.setup(self.blue_pin, GPIO.OUT)
@@ -70,7 +70,7 @@ class SensorManager:
         GPIO.output(self.red_pin, GPIO.LOW)
 
     def door_is_open(self):
-        door_state = GPIO.input(self.DOOR_SENSOR_PIN)
+        door_state = GPIO.input(self.door_sensor_pin)
         if door_state == GPIO.HIGH:
             print("Door is open!")
             return True
@@ -85,7 +85,7 @@ class SensorManager:
                 triggered = False
                 image = self.picam2.capture_array("main")
 
-                face_in_stream = self.detect_faces(image)
+                face_in_stream = self.detect(image)
                 if face_in_stream:
                     self.control_led(True, self.blue_pin)
                     triggered = True
@@ -94,7 +94,6 @@ class SensorManager:
                     triggered = True
                 if not triggered:
                     self.control_led(True, self.green_pin)
-                #time.sleep(0.5)
 
                 if cv2.waitKey(10) == 27:
                     self.picam2.close()
@@ -104,21 +103,22 @@ class SensorManager:
             exit()          
 
     # callback for image processing
-    def detect_faces(self, image):
+    def detect(self, image):
         #eliminate the 4th channel to ensure smooth programming
         image = image[:,:,0:3]
 
         #detect faces
         results = self.model(image)
 
-        # determine whether any faces were detected, and return the results
-        faces_detected = False
-        for result in results:
-            if len(result.boxes) > 0:
-                faces_detected = True
+        # determine whether any people were detected, and return the results
+        people_detected = False
+        if len(results[0].boxes) > 0:
+        for box in results[0].boxes:
+            if box.cls == 0:
+                people_detected = True
 
         self.draw_faces(results, image)
-        return faces_detected
+        return people_detected
 
     def draw_faces(self, results, image):
         if image is None:
