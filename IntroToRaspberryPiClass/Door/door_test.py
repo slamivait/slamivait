@@ -3,6 +3,7 @@
 import RPi.GPIO as GPIO
 import time
 
+# global variables
 # setup LED
 red_pin = 27
 green_pin = 17
@@ -10,11 +11,15 @@ blue_pin = 22
 
 door_sensor_pin = 16
 
+# Turns all LEDs off
 def clear_led():
     GPIO.output(blue_pin, GPIO.LOW)
     GPIO.output(green_pin, GPIO.LOW)
     GPIO.output(red_pin, GPIO.LOW)
 
+# Turns one LED on (True) or off (False
+# on should be a boolean, as indicated in the line above
+# color_pin should be one of the pins associated with the pin of the color
 def control_led(on, color_pin):
     clear_led()
     if on:
@@ -22,10 +27,13 @@ def control_led(on, color_pin):
     else:
         GPIO.output(color_pin, GPIO.LOW)
 
+# Turns all LEDs off with a time break
 def clear():
+    time.sleep(0.5)
     clear_led()
     time.sleep(0.5)
 
+# Returns True if the door sensor is open, and False if closed
 def door_is_open():
     door_state = GPIO.input(door_sensor_pin)
     if door_state == GPIO.HIGH:
@@ -53,7 +61,6 @@ if __name__ == "__main__":
             control_led(True, red_pin)
         else:
             control_led(True, green_pin)
-        time.sleep(0.5)
         clear()
 
 
